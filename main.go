@@ -11,8 +11,8 @@ var templatesFolder string
 var componentsFolder string
 
 func main() {
-	templatesFolder = "templates/"
-	componentsFolder = "templates/components/"
+	templatesFolder = "./templates/"
+	componentsFolder = templatesFolder + "components/"
 
 	templates = template.Must(template.ParseFiles(
 		templatesFolder+"base.gohtml",
