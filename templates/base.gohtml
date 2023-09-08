@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {{template "head" .}}
+</head>
+<body>
+    <header>
+        {{template "header" .}}
+    </header>
+    <div>
+        {{block "content" .}}Contenido predeterminado{{end}}
+    </div>
+    <footer>
+        {{template "footer" .}}
+    </footer>
+</body>
+</html>

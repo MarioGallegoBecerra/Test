@@ -2,21 +2,46 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 )
 
-func main() {
-	//sock.Start()
-	// Configurar un manejador para la ruta "/"
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// Escribir "Hola mundo" como respuesta
-		fmt.Fprintf(w, "Hola mundo")
-	})
+var templates *template.Template
+var templatesFolder string
+var componentsFolder string
 
-	// Iniciar el servidor en el puerto 8080
+func main() {
+	templatesFolder = "templates/"
+	componentsFolder = "templates/components/"
+
+	templates = template.Must(template.ParseFiles(
+		templatesFolder+"base.gohtml",
+		componentsFolder+"header.gohtml",
+		componentsFolder+"footer.gohtml",
+		componentsFolder+"head.gohtml",
+	))
+
+	http.HandleFunc("/", mainHandler)
+
 	fmt.Println("Servidor escuchando en http://localhost:8080")
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		fmt.Println("Error al iniciar el servidor:", err)
+	}
+}
+
+func mainHandler(response http.ResponseWriter, request *http.Request) {
+	fmt.Println("===================== request:\n", request, "\n\n=====================")
+
+	data := struct {
+		Title string
+	}{
+		Title: "Página de inicio",
+	}
+
+	err := templates.ExecuteTemplate(response, "base.gohtml", data)
+	if err != nil {
+		http.Error(response, "Error al renderizar la plantilla", http.StatusInternalServerError)
+		fmt.Println("Error al renderizar la plantilla:", err)
 	}
 }
