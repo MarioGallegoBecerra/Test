@@ -11,7 +11,7 @@ var templatesFolder string
 var componentsFolder string
 
 func main() {
-	templatesFolder = "./templates/"
+	templatesFolder = "/workspace/templates/"
 	componentsFolder = templatesFolder + "components/"
 
 	templates = template.Must(template.ParseFiles(
