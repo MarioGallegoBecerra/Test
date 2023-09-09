@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 )
 
 var templates *template.Template
@@ -11,7 +12,13 @@ var templatesFolder string
 var componentsFolder string
 
 func main() {
-	templatesFolder = "/workspace/templates/"
+	rutaActual, errr := os.Getwd()
+	if errr != nil {
+		fmt.Println("Error al obtener la ruta de trabajo actual:", errr)
+	}
+	fmt.Println("Ruta de trabajo actual:", rutaActual)
+
+	templatesFolder = rutaActual + "/templates/"
 	componentsFolder = templatesFolder + "components/"
 
 	templates = template.Must(template.ParseFiles(
