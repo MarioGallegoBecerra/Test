@@ -9,10 +9,9 @@ RUN go mod download
 RUN go build -o /$APP_NAME
 RUN chmod +x /$APP_NAME
 
-
 # Production stage
 FROM alpine:latest AS production
 ARG APP_NAME
-WORKDIR /root/app/$APP_NAME
+WORKDIR /root/
 COPY --from=build /$APP_NAME ./
 CMD ./$APP_NAME
