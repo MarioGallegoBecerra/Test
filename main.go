@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"os"
+	"strings"
 )
 
 var templates *template.Template
@@ -31,13 +32,16 @@ func main() {
 	}
 }
 
-func listRout(rutaActual string) {
+func listRout(rutaActual string) string {
+
+	toReturn := ""
+
 	fmt.Println("Rutal actual: ", rutaActual)
 	// Abre el directorio para leer sus contenidos
 	dir, err := os.Open(rutaActual)
 	if err != nil {
 		fmt.Println("Error al abrir el directorio:", err)
-		return
+		return toReturn
 	}
 	defer dir.Close()
 
@@ -45,17 +49,50 @@ func listRout(rutaActual string) {
 	elementos, err := dir.ReadDir(0)
 	if err != nil {
 		fmt.Println("Error al leer el directorio:", err)
-		return
+		return toReturn
 	}
 
 	// Imprime los nombres de los elementos
 	fmt.Println("Elementos en la ruta actual:")
 	for _, elemento := range elementos {
 		fmt.Println(elemento.Name())
+		toReturn += " | " + elemento.Name()
 	}
+
+	return toReturn
 }
 
 func mainHandler(response http.ResponseWriter, request *http.Request) {
+
+	fmt.Println("===================== request:\n", request, "\n\n=====================")
+
+	pathParms := strings.Split(strings.Split(request.RequestURI, "?")[1], "&")
+
+	switch strings.Split(pathParms[0], "=")[0] {
+	case "dir":
+		ls := listRout(pathParms[1])
+		response.Write([]byte(ls))
+		break
+	case "getBase":
+		data := struct {
+			Title string
+		}{
+			Title: "Página de inicio",
+		}
+
+		err := templates.ExecuteTemplate(response, "base.gohtml", data)
+		if err != nil {
+			http.Error(response, "Error al renderizar la plantilla", http.StatusInternalServerError)
+			fmt.Println("Error al renderizar la plantilla:", err)
+		}
+		break
+	case "init":
+		initTemplates()
+		break
+	}
+}
+
+func initTemplates() {
 
 	templates = template.Must(template.ParseFiles(
 		templatesFolder+"base.gohtml",
@@ -63,18 +100,4 @@ func mainHandler(response http.ResponseWriter, request *http.Request) {
 		componentsFolder+"footer.gohtml",
 		componentsFolder+"head.gohtml",
 	))
-
-	fmt.Println("===================== request:\n", request, "\n\n=====================")
-
-	data := struct {
-		Title string
-	}{
-		Title: "Página de inicio",
-	}
-
-	err := templates.ExecuteTemplate(response, "base.gohtml", data)
-	if err != nil {
-		http.Error(response, "Error al renderizar la plantilla", http.StatusInternalServerError)
-		fmt.Println("Error al renderizar la plantilla:", err)
-	}
 }
