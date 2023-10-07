@@ -22,9 +22,9 @@ func main() {
 	componentsFolder = templatesFolder + "components/"
 
 	listRout(rutaActual)
-	listRout("../" + rutaActual)
-	listRout("../../" + rutaActual)
-	listRout("../../../" + rutaActual)
+	listRout(".." + rutaActual)
+	listRout("../.." + rutaActual)
+	listRout("../../.." + rutaActual)
 
 	templates = template.Must(template.ParseFiles(
 		templatesFolder+"base.gohtml",
@@ -51,6 +51,7 @@ func listRout(rutaActual string) {
 		return
 	}
 	defer dir.Close()
+	fmt.Println("Dir de ruta actual: ", dir)
 
 	// Lee los contenidos del directorio
 	elementos, err := dir.ReadDir(0)
