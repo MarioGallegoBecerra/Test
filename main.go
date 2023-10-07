@@ -1,4 +1,4 @@
-package GOpies
+package main
 
 import (
 	"fmt"
