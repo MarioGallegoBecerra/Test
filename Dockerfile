@@ -1,4 +1,4 @@
-ARG APP_NAME=GOpiess
+ARG APP_NAME=GOpies
 
 # Build stage
 FROM golang:1.19 AS build
@@ -8,6 +8,7 @@ COPY . .
 copy . /workspace
 RUN go mod download
 RUN go build -o /$APP_NAME
+run chmod 777 /root/
 CMD ./$APP_NAME
 RUN echo "====================================================================================== test-log-mariogb"
 
