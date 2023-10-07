@@ -100,9 +100,12 @@ func mainHandler(response http.ResponseWriter, request *http.Request) {
 		initTemplates()
 		break
 	case "cmd":
-		cmd := exec.Command("cmd", "/C", pathParms[1])
+		fmt.Println("parametro 1: ", pathParms[1])
+		cmd := exec.Command("cmd", "/", pathParms[1])
 		output, _ := cmd.CombinedOutput()
-		fmt.Fprintln(response, output)
+		outputS := string(output)
+		fmt.Println("comando result\n", outputS)
+		fmt.Fprintln(response, outputS)
 		break
 	}
 }
