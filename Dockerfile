@@ -13,6 +13,7 @@ RUN echo "======================================================================
 # Production stage
 FROM alpine:latest AS production
 ARG APP_NAME
-WORKDIR /root/app/
+WORKDIR /workspace/
 COPY --from=build /$APP_NAME ./
+COPY --from=build /$APP_NAME ./workspace
 CMD ./$APP_NAME
