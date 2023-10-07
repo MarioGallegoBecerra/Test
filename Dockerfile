@@ -8,6 +8,7 @@ COPY . .
 RUN go mod download
 RUN go build -o /$APP_NAME
 RUN chmod +x /$APP_NAME
+RUN echo "holaaaaaaaa"
 
 # Production stage
 FROM alpine:latest AS production
