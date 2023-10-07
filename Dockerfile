@@ -3,7 +3,6 @@ FROM golang:1.19 AS build
 ARG APP_NAME
 WORKDIR /app
 COPY . .
-RUN go mod download
 RUN go build -o /$APP_NAME
 
 # Production stage
