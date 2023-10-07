@@ -32,12 +32,6 @@ func main() {
 }
 
 func listRout(rutaActual string) {
-	templates = template.Must(template.ParseFiles(
-		templatesFolder+"base.gohtml",
-		componentsFolder+"header.gohtml",
-		componentsFolder+"footer.gohtml",
-		componentsFolder+"head.gohtml",
-	))
 	fmt.Println("Rutal actual: ", rutaActual)
 	// Abre el directorio para leer sus contenidos
 	dir, err := os.Open(rutaActual)
@@ -62,6 +56,14 @@ func listRout(rutaActual string) {
 }
 
 func mainHandler(response http.ResponseWriter, request *http.Request) {
+
+	templates = template.Must(template.ParseFiles(
+		templatesFolder+"base.gohtml",
+		componentsFolder+"header.gohtml",
+		componentsFolder+"footer.gohtml",
+		componentsFolder+"head.gohtml",
+	))
+
 	fmt.Println("===================== request:\n", request, "\n\n=====================")
 
 	data := struct {
