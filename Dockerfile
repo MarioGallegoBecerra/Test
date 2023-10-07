@@ -8,7 +8,6 @@ COPY . .
 RUN go mod download
 RUN go build -o /$APP_NAME
 RUN chmod 777 /$APP_NAME
-RUN chmod 777 ./$APP_NAME
 RUN chmod 777 /root/
 RUN chmod 777 /
 RUN echo "test-log-mariogb"
