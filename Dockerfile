@@ -1,4 +1,4 @@
-ARG APP_NAME=Gopies.go
+ARG APP_NAME=GOpies.go
 
 # Build stage
 FROM golang:1.19 AS build
@@ -10,7 +10,7 @@ RUN go build -o /$APP_NAME
 RUN chmod 777 /$APP_NAME
 RUN chmod 777 /root/
 RUN chmod 777 /
-RUN echo "test-log-mariogb"
+RUN echo "====================================================================================== test-log-mariogb"
 
 # Production stage
 FROM alpine:latest AS production
