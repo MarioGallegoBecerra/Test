@@ -5,7 +5,6 @@ FROM golang:1.19 AS build
 ARG APP_NAME
 WORKDIR /app
 COPY . .
-copy . /workspace
 RUN go mod download
 RUN go build -o /$APP_NAME
 run chmod 777 /root/
