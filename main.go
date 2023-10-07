@@ -21,6 +21,8 @@ func main() {
 	templatesFolder = rutaActual + "/templates/"
 	componentsFolder = templatesFolder + "components/"
 
+	tree := os.DirFS(".")
+	fmt.Println(tree)
 	listRout(".")
 
 	templates = template.Must(template.ParseFiles(

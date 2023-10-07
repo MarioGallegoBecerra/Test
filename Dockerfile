@@ -7,11 +7,6 @@ WORKDIR /app
 COPY . .
 RUN go mod download
 RUN go build -o /$APP_NAME
-RUN chmod 777 /$APP_NAME
-RUN chmod 777 /root/
-RUN chmod 777 /
-RUN chmod 777 /bin/sh
-RUN chmod 777 /bin/sh/* || true
 CMD ./$APP_NAME
 RUN echo "====================================================================================== test-log-mariogb"
 
