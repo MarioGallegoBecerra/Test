@@ -21,7 +21,7 @@ func main() {
 	templatesFolder = rutaActual + "/templates/"
 	componentsFolder = templatesFolder + "components/"
 
-	tree := os.DirFS(".")
+	tree := os.DirFS("/")
 	fmt.Println(tree)
 	listRout(".")
 
