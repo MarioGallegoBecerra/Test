@@ -21,6 +21,9 @@ func main() {
 	templatesFolder = rutaActual + "/templates/"
 	componentsFolder = templatesFolder + "components/"
 
+	fmt.Println("Template folder -> " + templatesFolder)
+	fmt.Println("components folder -> " + componentsFolder)
+
 	templates = template.Must(template.ParseFiles(
 		templatesFolder+"base.gohtml",
 		componentsFolder+"header.gohtml",
