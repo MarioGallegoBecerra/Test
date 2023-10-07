@@ -25,7 +25,7 @@ func listDirectoryTree(rootPath string, indent string) {
 }
 
 func main() {
-	rootDirectory := "." // Cambia esta ruta según la ubicación que desees explorar
+	rootDirectory := "/" // Cambia esta ruta según la ubicación que desees explorar
 
 	fmt.Println("Árbol de directorios y archivos en:", rootDirectory)
 	listDirectoryTree(rootDirectory, "")
