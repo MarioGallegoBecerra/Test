@@ -1,4 +1,4 @@
-ARG APP_NAME=main.go
+ARG APP_NAME=Gopies.go
 
 # Build stage
 FROM golang:1.19 AS build
