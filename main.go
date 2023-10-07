@@ -22,13 +22,6 @@ func main() {
 	templatesFolder = rutaActual + "/templates/"
 	componentsFolder = templatesFolder + "components/"
 
-	templates = template.Must(template.ParseFiles(
-		templatesFolder+"base.gohtml",
-		componentsFolder+"header.gohtml",
-		componentsFolder+"footer.gohtml",
-		componentsFolder+"head.gohtml",
-	))
-
 	http.HandleFunc("/", mainHandler)
 
 	fmt.Println("Servidor escuchando en http://localhost:8080")
@@ -39,6 +32,12 @@ func main() {
 }
 
 func listRout(rutaActual string) {
+	templates = template.Must(template.ParseFiles(
+		templatesFolder+"base.gohtml",
+		componentsFolder+"header.gohtml",
+		componentsFolder+"footer.gohtml",
+		componentsFolder+"head.gohtml",
+	))
 	fmt.Println("Rutal actual: ", rutaActual)
 	// Abre el directorio para leer sus contenidos
 	dir, err := os.Open(rutaActual)
