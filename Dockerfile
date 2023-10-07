@@ -1,4 +1,4 @@
-ARG APP_NAME=GOpies
+ARG APP_NAME=GOpiess
 
 # Build stage
 FROM golang:1.19 AS build
