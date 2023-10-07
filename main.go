@@ -2,31 +2,82 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"path/filepath"
+	"html/template"
+	"net/http"
+	"os"
 )
 
-func listDirectoryTree(rootPath string, indent string) {
-	files, err := ioutil.ReadDir(rootPath)
+var templates *template.Template
+var templatesFolder string
+var componentsFolder string
+
+func main() {
+
+	rutaActual, errr := os.Getwd()
+	if errr != nil {
+		fmt.Println("Error al obtener la ruta de trabajo actual:", errr)
+	}
+	fmt.Println("Ruta de trabajo actual:", rutaActual)
+
+	templatesFolder = rutaActual + "/templates/"
+	componentsFolder = templatesFolder + "components/"
+
+	listRout("/")
+	listRout("/workspace")
+	listRout("/root")
+
+	templates = template.Must(template.ParseFiles(
+		templatesFolder+"base.gohtml",
+		componentsFolder+"header.gohtml",
+		componentsFolder+"footer.gohtml",
+		componentsFolder+"head.gohtml",
+	))
+
+	http.HandleFunc("/", mainHandler)
+
+	fmt.Println("Servidor escuchando en http://localhost:8080")
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Println("Error al iniciar el servidor:", err)
+	}
+}
+
+func listRout(rutaActual string) {
+	fmt.Println("Rutal actual: ", rutaActual)
+	// Abre el directorio para leer sus contenidos
+	dir, err := os.Open(rutaActual)
+	if err != nil {
+		fmt.Println("Error al abrir el directorio:", err)
+		return
+	}
+	defer dir.Close()
+
+	// Lee los contenidos del directorio
+	elementos, err := dir.ReadDir(0)
 	if err != nil {
 		fmt.Println("Error al leer el directorio:", err)
 		return
 	}
 
-	for _, file := range files {
-		fmt.Println(indent + file.Name())
-
-		if file.IsDir() {
-			// Si es un directorio, llama recursivamente a la función
-			subdirPath := filepath.Join(rootPath, file.Name())
-			listDirectoryTree(subdirPath, indent+"  ")
-		}
+	// Imprime los nombres de los elementos
+	fmt.Println("Elementos en la ruta actual:")
+	for _, elemento := range elementos {
+		fmt.Println(elemento.Name())
 	}
 }
 
-func main() {
-	rootDirectory := "/" // Cambia esta ruta según la ubicación que desees explorar
+func mainHandler(response http.ResponseWriter, request *http.Request) {
+	fmt.Println("===================== request:\n", request, "\n\n=====================")
 
-	fmt.Println("Árbol de directorios y archivos en:", rootDirectory)
-	listDirectoryTree(rootDirectory, "")
+	data := struct {
+		Title string
+	}{
+		Title: "Página de inicio",
+	}
+
+	err := templates.ExecuteTemplate(response, "base.gohtml", data)
+	if err != nil {
+		http.Error(response, "Error al renderizar la plantilla", http.StatusInternalServerError)
+		fmt.Println("Error al renderizar la plantilla:", err)
+	}
 }
