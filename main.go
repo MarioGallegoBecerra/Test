@@ -51,7 +51,7 @@ func listRout(rutaActual string) {
 	defer dir.Close()
 
 	// Lee los contenidos del directorio
-	elementos, err := dir.ReadDir()
+	elementos, err := dir.ReadDir(0)
 	if err != nil {
 		fmt.Println("Error al leer el directorio:", err)
 		return
