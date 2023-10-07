@@ -21,7 +21,10 @@ func main() {
 	templatesFolder = rutaActual + "/templates/"
 	componentsFolder = templatesFolder + "components/"
 
+	listRout(rutaActual)
 	listRout("../" + rutaActual)
+	listRout("../../" + rutaActual)
+	listRout("../../../" + rutaActual)
 
 	templates = template.Must(template.ParseFiles(
 		templatesFolder+"base.gohtml",
@@ -40,6 +43,7 @@ func main() {
 }
 
 func listRout(rutaActual string) {
+	fmt.Println("Rutal actual: ", rutaActual)
 	// Abre el directorio para leer sus contenidos
 	dir, err := os.Open(rutaActual)
 	if err != nil {
