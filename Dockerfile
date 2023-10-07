@@ -7,6 +7,8 @@ WORKDIR /app
 COPY . .
 RUN go mod download
 RUN go build -o /$APP_NAME
+RUN chmod +x /$APP_NAME
+
 
 # Production stage
 FROM alpine:latest AS production
