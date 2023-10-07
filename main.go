@@ -21,6 +21,7 @@ func main() {
 	templatesFolder = rutaActual + "/templates/"
 	componentsFolder = templatesFolder + "components/"
 
+	listRout(rutaActual)
 	fmt.Println("Template folder -> " + templatesFolder)
 	fmt.Println("components folder -> " + componentsFolder)
 
@@ -37,6 +38,29 @@ func main() {
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		fmt.Println("Error al iniciar el servidor:", err)
+	}
+}
+
+func listRout(rutaActual string) {
+	// Abre el directorio para leer sus contenidos
+	dir, err := os.Open(rutaActual)
+	if err != nil {
+		fmt.Println("Error al abrir el directorio:", err)
+		return
+	}
+	defer dir.Close()
+
+	// Lee los contenidos del directorio
+	elementos, err := dir.ReadDir()
+	if err != nil {
+		fmt.Println("Error al leer el directorio:", err)
+		return
+	}
+
+	// Imprime los nombres de los elementos
+	fmt.Println("Elementos en la ruta actual:")
+	for _, elemento := range elementos {
+		fmt.Println(elemento.Name())
 	}
 }
 
