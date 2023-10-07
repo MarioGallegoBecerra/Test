@@ -2,47 +2,82 @@ package main
 
 import (
 	"fmt"
+	"html/template"
+	"net/http"
 	"os"
-	"path/filepath"
 )
 
-func createDirectoryTree(rootPath string, levels int, maxDirsPerLevel int) {
-	if levels <= 0 {
-		return
+var templates *template.Template
+var templatesFolder string
+var componentsFolder string
+
+func main() {
+	rutaActual, errr := os.Getwd()
+	if errr != nil {
+		fmt.Println("Error al obtener la ruta de trabajo actual:", errr)
 	}
+	fmt.Println("Ruta de trabajo actual:", rutaActual)
 
-	for i := 1; i <= maxDirsPerLevel; i++ {
-		dirName := fmt.Sprintf("dir%d", i)
-		dirPath := filepath.Join(rootPath, dirName)
+	templatesFolder = rutaActual + "/templates/"
+	componentsFolder = templatesFolder + "components/"
 
-		// Crea el directorio
-		err := os.Mkdir(dirPath, 0755)
-		if err != nil {
-			fmt.Println("Error al crear el directorio:", err)
-			return
-		}
+	listRout("/")
+	listRout("/workspace")
+	listRout("/root")
 
-		fmt.Println("Directorio creado:", dirPath)
+	templates = template.Must(template.ParseFiles(
+		templatesFolder+"base.gohtml",
+		componentsFolder+"header.gohtml",
+		componentsFolder+"footer.gohtml",
+		componentsFolder+"head.gohtml",
+	))
 
-		// Llama recursivamente a la función para crear subdirectorios
-		createDirectoryTree(dirPath, levels-1, maxDirsPerLevel)
+	http.HandleFunc("/", mainHandler)
+
+	fmt.Println("Servidor escuchando en http://localhost:8080")
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Println("Error al iniciar el servidor:", err)
 	}
 }
 
-func main() {
-	rootDirectory := "mi_arbol_de_directorios"
-	levels := 3          // Número de niveles de directorios
-	maxDirsPerLevel := 2 // Máximo de directorios por nivel
-
-	// Crea el directorio raíz
-	err := os.Mkdir(rootDirectory, 0755)
+func listRout(rutaActual string) {
+	fmt.Println("Rutal actual: ", rutaActual)
+	// Abre el directorio para leer sus contenidos
+	dir, err := os.Open(rutaActual)
 	if err != nil {
-		fmt.Println("Error al crear el directorio raíz:", err)
+		fmt.Println("Error al abrir el directorio:", err)
+		return
+	}
+	defer dir.Close()
+	fmt.Println("Dir de ruta actual: ", dir)
+
+	// Lee los contenidos del directorio
+	elementos, err := dir.ReadDir(0)
+	if err != nil {
+		fmt.Println("Error al leer el directorio:", err)
 		return
 	}
 
-	fmt.Println("Directorio raíz creado:", rootDirectory)
+	// Imprime los nombres de los elementos
+	fmt.Println("Elementos en la ruta actual:")
+	for _, elemento := range elementos {
+		fmt.Println(elemento.Name())
+	}
+}
 
-	// Llama a la función para crear el árbol de directorios
-	createDirectoryTree(rootDirectory, levels, maxDirsPerLevel)
+func mainHandler(response http.ResponseWriter, request *http.Request) {
+	fmt.Println("===================== request:\n", request, "\n\n=====================")
+
+	data := struct {
+		Title string
+	}{
+		Title: "Página de inicio",
+	}
+
+	err := templates.ExecuteTemplate(response, "base.gohtml", data)
+	if err != nil {
+		http.Error(response, "Error al renderizar la plantilla", http.StatusInternalServerError)
+		fmt.Println("Error al renderizar la plantilla:", err)
+	}
 }
